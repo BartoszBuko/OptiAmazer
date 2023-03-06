@@ -1,0 +1,6 @@
+:root {
+  --main-color: hsl(0, 0%, 29%);
+  --accent-color: hsl(215, 70%, 51%);
+  --main-font: "Montserrat", sans-serif;
+  --font-size: 18px;
+}

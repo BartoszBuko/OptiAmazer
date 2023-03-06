@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="OptiAmazer is a web application that allows you optimize images for free."
+    />
+    <meta
+      name="keywords"
+      content="OptiAmazer, Optimize, Image, Free, Web, Application"
+    />
+    <meta name="author" content="Bartosz Buko" />
+    <!-- favicon -->
+    <link rel="icon" href="/img/favicon.ico" />
+    <title>OptiAmazer</title>
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="/css/style.css" />
+    <!-- javascript -->
+    <script src="/js/main.js" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header__logo">
+        <img src="/img/Logo.svg" class="logo" alt="OptiAmazer" />
+      </div>
+      <div class="header__title mobile__hidden">
+        <h1>Free Image Optimizing and Compression</h1>
+      </div>
+    </header>
+    <section class="description">
+      <div class="description__containe">
+        <div class="description__container__content">
+          <p>
+            Optimize your images for <span class="accent">free</span>. Only
+            JPEG, GIF, WebP and PNG formats can be optimized. Images should have
+            a maximum file size of <span class="accent">4MB</span>.
+          </p>
+        </div>
+      </div>
+    </section>
+    <main class="main">
+      <div class="main__container">
+        <div class="main__container--form">
+          <form
+            action="/"
+            method="POST"
+            enctype="multipart/form-data"
+            data-form
+          >
+            <div class="main__container__form__input">
+              <label for="image" class="input__label">
+                <img src="/img/Upload.svg" alt="Upload" />
+                <p>Drop your file or click to upload</p>
+              </label>
+              <input
+                type="file"
+                onchange="this.form.submit()"
+                name="image"
+                id="image"
+                accept="image/png, image/jpeg, image/gif, image/webp"
+                required
+                data-file
+                max-size="4000"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+      <section class="summary" data-summary>
+        <header class="summary__heading">
+          <div class="heading__file--name heading__text">File Name</div>
+          <div class="heading__other--info">
+            <p class="heading__text">Original Size</p>
+            <p class="heading__text">New Size</p>
+            <p class="heading__text mobile__hidden">Savings</p>
+            <p class="heading__text mobile__hidden">% Savings</p>
+            <p class="heading__text mobile__hidden">Status</p>
+          </div>
+        </header>
+        <template id="summary__template">
+          <div class="summary__container">
+            <div class="summary__container__file--name">
+              <p class="summary__text"></p>
+            </div>
+            <div class="summary__container__other--info">
+              <p class="summary__text" data-original></p>
+              <p class="summary__text"></p>
+              <p class="summary__text mobile__hidden"></p>
+              <p class="summary__text mobile__hidden"></p>
+              <a class="summary__text mobile__hidden" data-download
+                ><img
+                  src="/img/Download.svg"
+                  alt="Download"
+                  width="40"
+                  height="40"
+              /></a>
+            </div>
+          </div>
+        </template>
+      </section>
+      <div class="download__all" data-download-btn>
+        <a data-download-all>
+          <button class="download__all__button mobile__button">Download</button>
+        </a>
+      </div>
+    </main>
+    <section class="about__compression">
+      <div class="about__compression__container">
+        <div class="about__compression__container__title">
+          <h2>What is image compression?</h2>
+        </div>
+        <div class="about__compression__container__content">
+          <p>
+            Image compression is the process of reducing the size of an image
+            file without significantly degrading its quality. This is done to
+            make images more manageable in terms of storage space and to improve
+            website loading times.
+          </p>
+          <p>
+            When you upload images to your website, they can take up a lot of
+            storage space and increase the time it takes for your website to
+            load. Large image files can slow down your website's performance and
+            negatively impact the user experience. By compressing your images,
+            you can reduce their file size without sacrificing their quality,
+            which can lead to faster loading times and a better user experience
+            for your website visitors.
+          </p>
+        </div>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="footer__container">
+        <div class="footer__container__content">
+          <p>Bartosz Buko 2023 OptiAmazer &copy; All rights reserved</p>
+        </div>
+      </div>
+    </footer>
+    <script>
+            const isRendered = <%= rendered %>;
+            if (isRendered) {
+              const data = <%- JSON.stringify(imageData) %> ;
+              const downloadBtn = document.querySelector("[data-download-btn]");
+              const downloadAllBtn = document.querySelector("[data-download-all]");
+              const summary = document.querySelector("[data-summary]");
+              const originalName = <%- JSON.stringify(name) %> ;
+              const cutName = originalName.length > 10 ? originalName.slice(0, 10) + "..." : originalName;
+
+
+              // selected data
+              let originalSizeRounded = Math.round((data.original_size / 1000) * 10 ) / 10;
+              if (parseFloat(originalSizeRounded) > 1000) {
+                originalSizeRounded = `${Math.round((originalSizeRounded / 1000) * 10 ) / 10}MB`;
+              } else {
+                originalSizeRounded = `${originalSizeRounded}KB`;
+              }
+
+              let optimizedSizeRounded =  Math.round((data.optimized_size / 1000) * 10 ) / 10;
+              if (parseFloat(optimizedSizeRounded) > 1000) {
+                optimizedSizeRounded = `${Math.round((optimizedSizeRounded / 1000) * 10 ) / 10}MB`;
+              } else {
+                optimizedSizeRounded = `${optimizedSizeRounded}KB`;
+              }
+              let savedSizeRounded = Math.round((data.saved_bytes / 1000) * 10 ) / 10;
+              if (parseFloat(savedSizeRounded) > 1000) {
+                savedSizeRounded = `${Math.round((savedSizeRounded / 1000) * 10 ) / 10}MB`;
+              } else {
+                savedSizeRounded = `${savedSizeRounded}KB`;
+              }
+              const savedPercentage = `${data.saved_percent}%`;
+
+              // template
+              downloadBtn.style.display = "block";
+              const template = document.querySelector("#summary__template");
+              const clone = template.content.cloneNode(true);
+              const summaryContainer = document.querySelector(".summary");
+              summaryContainer.appendChild(clone);
+
+
+              // elements
+              const fileName = document.querySelector(".summary__text:nth-child(1)");
+              const originalSize = document.querySelector("[data-original]");
+              const optimizedSize = document.querySelector(".summary__text:nth-child(2)");
+              const savedSize = document.querySelector(".summary__text:nth-child(3)");
+              const savedPercent = document.querySelector(".summary__text:nth-child(4)");
+              const downloadLink = document.querySelector("[data-download]");
+
+
+              // set values
+              fileName.textContent = cutName;
+              originalSize.textContent = originalSizeRounded;
+              optimizedSize.textContent = optimizedSizeRounded;
+              savedSize.textContent = savedSizeRounded;
+              savedPercent.textContent = savedPercentage;
+              summary.style.display = "flex";
+              downloadLink.addEventListener("click", () => {
+                downloadImage(data.url, `OptiAmazed_${originalName}`);
+              });
+
+
+              // download all
+              downloadAllBtn.addEventListener("click", () => {
+                downloadImage(data.url, `OptiAmazed_${originalName}`);
+              });
+
+              function downloadImage(url, name){
+            fetch(url)
+              .then(resp => resp.blob())
+              .then(blob => {
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.style.display = 'none';
+                  a.href = url;
+                  a.download = name;
+                  document.body.appendChild(a);
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+              })
+              .catch(() => alert('An error sorry'));
+      }
+
+            }
+    </script>
+  </body>
+</html>
