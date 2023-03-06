@@ -1,0 +1,29 @@
+{
+  "name": "optiamazer",
+  "version": "1.0.0",
+  "description": "Free Image Optimizer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "optimize",
+    "image",
+    "otpimizer",
+    "free",
+    "image",
+    "optimizer"
+  ],
+  "author": "Bartosz Aleksander Buko",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cheetaho-node": "^0.0.1",
+    "connect-multiparty": "^2.2.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}
