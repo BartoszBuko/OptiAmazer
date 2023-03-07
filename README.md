@@ -17,9 +17,9 @@ Mobile version: yes!
 
 PageSpeed insights:
 
-- Mobile: <br/>
+- [Mobile](https://pagespeed.web.dev/report?url=https%3A%2F%2Foptiamazer.onrender.com%2F&hl=pl&form_factor=mobile): <br/> <br/>
   ![image](./githubimages/mobile-insights.png) <br/>
-- Dekstop: <br/>
+- [Dekstop](https://pagespeed.web.dev/report?url=https%3A%2F%2Foptiamazer.onrender.com%2F&hl=pl&form_factor=desktop): <br/> <br/>
   ![image](./githubimages/desktop-insights.png)
 
 ## How can I try it? 🤔
