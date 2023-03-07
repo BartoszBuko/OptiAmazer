@@ -13,12 +13,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 require("dotenv").config();
 
-fs.unlink("/tmp/temp.txt", (err) => {
-  if (err) {
-    console.log(err);
-  }
-});
-
 const storage = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
