@@ -14,9 +14,10 @@ const port = process.env.PORT || 3000;
 require("dotenv").config();
 
 fs.unlink("/tmp/.gitignore", (err) => {
-    if (err) {
-      console.log(err);
-    }
+  if (err) {
+    console.log(err);
+  }
+});
 
 const storage = multer({
   storage: multer.diskStorage({
