@@ -16,7 +16,7 @@ require("dotenv").config();
 const storage = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, "uploads/");
+      cb(null, "tmp/");
     },
     filename: function (req, file, cb) {
       crypto.pseudoRandomBytes(16, function (err, raw) {
