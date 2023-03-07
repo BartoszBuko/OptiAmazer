@@ -17,14 +17,14 @@ Mobile version: yes!
 
 PageSpeed insights:
 
-- [Mobile](https://pagespeed.web.dev/report?url=https%3A%2F%2Foptiamazer.onrender.com%2F&hl=pl&form_factor=mobile): <br/>
+- [Mobile](https://pagespeed.web.dev/report?url=https%3A%2F%2Foptiamazer.up.railway.app%2F&form_factor=mobile): <br/>
   ![image](./githubimages/mobile-insights.png) <br/>
-- [Dekstop](https://pagespeed.web.dev/report?url=https%3A%2F%2Foptiamazer.onrender.com%2F&hl=pl&form_factor=desktop): <br/>
+- [Dekstop](https://pagespeed.web.dev/report?url=https%3A%2F%2Foptiamazer.up.railway.app%2F&form_factor=desktop): <br/>
   ![image](./githubimages/desktop-insights.png)
 
 ## How can I try it? 🤔
 
-Try now on: https://optiamazer.onrender.com/p/ <br/>
+Try now on: https://optiamazer.up.railway.app/ <br/>
 
 ## Instalation steps 📋
 
