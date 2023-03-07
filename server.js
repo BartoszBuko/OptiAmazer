@@ -13,7 +13,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 require("dotenv").config();
 
-fs.unlink("/tmp/.gitignore", (err) => {
+fs.unlink("/tmp/temp.txt", (err) => {
   if (err) {
     console.log(err);
   }
