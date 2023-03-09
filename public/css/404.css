@@ -1,0 +1,11 @@
+@import url("variables.css");
+@import url("config.css");
+
+body {
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  row-gap: 1rem;
+  place-content: center;
+  color: var(--accent-color);
+}
