@@ -69,3 +69,4 @@ Figma: [click here](figma.com/file/rOFgzEOrscVswF3FGiNVOt/Untitled?node-id=0%3A1
 ## Technological facilities 🛠️
 
 Applicaton is based on Node.js (Express.js) <br/>
+API from CheetahO (https://cheetaho.com/) <br/>
