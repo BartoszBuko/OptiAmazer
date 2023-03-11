@@ -63,7 +63,7 @@
                 accept="image/png, image/jpeg, image/gif, image/webp"
                 required
                 data-file
-                max-size="4000"
+                multiple
               />
             </div>
           </form>
@@ -103,7 +103,9 @@
       </section>
       <div class="download__all" data-download-btn>
         <a data-download-all>
-          <button class="download__all__button mobile__button">Download</button>
+          <button class="download__all__button mobile__button">
+            Download All
+          </button>
         </a>
       </div>
     </main>
@@ -142,67 +144,74 @@
             const isRendered = <%= rendered %>;
             if (isRendered) {
               const data = <%- JSON.stringify(imageData) %> ;
+              // console.log(data);
               const downloadBtn = document.querySelector("[data-download-btn]");
               const downloadAllBtn = document.querySelector("[data-download-all]");
               const summary = document.querySelector("[data-summary]");
-              const originalName = <%- JSON.stringify(name) %> ;
-              const cutName = originalName.length > 10 ? originalName.slice(0, 10) + "..." : originalName;
+              const originalNames = <%- JSON.stringify(names) %> ;
+              // console.log(originalNames);
+
+              // variables for rounded sizes
+              let roundedOriginalSize;
+              let roundedOptimizedSize;
+              let roundedSavedSize;
+              let savedPercentage;
 
 
-              // selected data
-              let originalSizeRounded = Math.round((data.original_size / 1000) * 10 ) / 10;
-              if (parseFloat(originalSizeRounded) > 1000) {
-                originalSizeRounded = `${Math.round((originalSizeRounded / 1000) * 10 ) / 10}MB`;
-              } else {
-                originalSizeRounded = `${originalSizeRounded}KB`;
-              }
-
-              let optimizedSizeRounded =  Math.round((data.optimized_size / 1000) * 10 ) / 10;
-              if (parseFloat(optimizedSizeRounded) > 1000) {
-                optimizedSizeRounded = `${Math.round((optimizedSizeRounded / 1000) * 10 ) / 10}MB`;
-              } else {
-                optimizedSizeRounded = `${optimizedSizeRounded}KB`;
-              }
-              let savedSizeRounded = Math.round((data.saved_bytes / 1000) * 10 ) / 10;
-              if (parseFloat(savedSizeRounded) > 1000) {
-                savedSizeRounded = `${Math.round((savedSizeRounded / 1000) * 10 ) / 10}MB`;
-              } else {
-                savedSizeRounded = `${savedSizeRounded}KB`;
-              }
-              const savedPercentage = `${data.saved_percent}%`;
-
-              // template
-              downloadBtn.style.display = "block";
-              const template = document.querySelector("#summary__template");
-              const clone = template.content.cloneNode(true);
-              const summaryContainer = document.querySelector(".summary");
-              summaryContainer.appendChild(clone);
 
 
-              // elements
-              const fileName = document.querySelector(".summary__text:nth-child(1)");
-              const originalSize = document.querySelector("[data-original]");
-              const optimizedSize = document.querySelector(".summary__text:nth-child(2)");
-              const savedSize = document.querySelector(".summary__text:nth-child(3)");
-              const savedPercent = document.querySelector(".summary__text:nth-child(4)");
-              const downloadLink = document.querySelector("[data-download]");
+              for (let i = 0; i < data.length; i++) {
+                // template
+                const template = document.querySelector("#summary__template");
+                const summaryContainer = document.querySelector(".summary");
+                const clone = template.content.cloneNode(true);
+                const paragraphs = clone.querySelectorAll("p");
+                const href = clone.querySelector("a");
+
+                // append to DOM
+                summaryContainer.appendChild(clone);
+
+                // elements
+                const cutName = originalNames[i].length > 10 ? originalNames[i].slice(0, 10) + "..." : originalNames[i];
+
+                const fileName = paragraphs[0];
+                const originalSize = paragraphs[1];
+                const optimizedSize = paragraphs[2];
+                const savedSize = paragraphs[3];
+                const savedPercent = paragraphs[4];
+                const downloadLink = href;
 
 
-              // set values
-              fileName.textContent = cutName;
-              originalSize.textContent = originalSizeRounded;
-              optimizedSize.textContent = optimizedSizeRounded;
-              savedSize.textContent = savedSizeRounded;
-              savedPercent.textContent = savedPercentage;
-              summary.style.display = "flex";
-              downloadLink.addEventListener("click", () => {
-                downloadImage(data.url, `OptiAmazed_${originalName}`);
+                downloadBtn.style.display = "block";
+
+                // round sizes and add values
+                roundPercent(i)
+
+                fileName.textContent = cutName;
+                originalSize.textContent = roundedOriginalSize;
+                optimizedSize.textContent = roundedOptimizedSize;
+                savedSize.textContent = roundedSavedSize;
+                savedPercent.textContent = savedPercentage;
+                downloadLink.addEventListener("click", () => {
+                downloadImage(data[i].url, `OptiAmazed_${originalNames[i]}`);
               });
+                summary.style.display = "flex";
+
+                if(i === data.length - 1) {
+                  document.querySelectorAll(".summary__container")[i].classList.add("last__item")
+                }
+              }
+
+
+
 
 
               // download all
               downloadAllBtn.addEventListener("click", () => {
-                downloadImage(data.url, `OptiAmazed_${originalName}`);
+                data.forEach((data, i) => {
+                  const originalName = originalNames[i];
+                  downloadImage(data.url, `OptiAmazed_${originalName}`);
+                });
               });
 
               function downloadImage(url, name){
@@ -220,6 +229,30 @@
               })
               .catch(() => alert('An error sorry'));
       }
+
+          function roundPercent(i) {
+                 roundedOriginalSize = Math.round((data[i].original_size / 1000) * 10 ) / 10;
+              if (parseFloat(roundedOriginalSize) > 1000) {
+                roundedOriginalSize = `${Math.round((roundedOriginalSize / 1000) * 10 ) / 10}MB`;
+              } else {
+                roundedOriginalSize = `${roundedOriginalSize}KB`;
+              }
+
+               roundedOptimizedSize =  Math.round((data[i].optimized_size / 1000) * 10 ) / 10;
+              if (parseFloat(roundedOptimizedSize) > 1000) {
+                roundedOptimizedSize = `${Math.round((roundedOptimizedSize / 1000) * 10 ) / 10}MB`;
+              } else {
+                roundedOptimizedSize = `${roundedOptimizedSize}KB`;
+              }
+               roundedSavedSize = Math.round((data[i].saved_bytes / 1000) * 10 ) / 10;
+              if (parseFloat(roundedSavedSize) > 1000) {
+                roundedSavedSize = `${Math.round((roundedSavedSize / 1000) * 10 ) / 10}MB`;
+              } else {
+                roundedSavedSize = `${roundedSavedSize}KB`;
+              }
+               savedPercentage = `${data[i].saved_percent}%`;
+              }
+
 
             }
     </script>
