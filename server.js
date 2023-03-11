@@ -17,9 +17,15 @@ const MAX_SIZE = 4 * 1024 * 1024;
 //  add error handling for file size
 const fileSizeLimitErrorHandler = (err, req, res, next) => {
   if (err) {
-    res.sendStatus(413);
-  } else {
-    next();
+    if (err.code === "LIMIT_FILE_SIZE") {
+      res.status(413).send({
+        message: "File size is too large. Max limit is 4MB",
+      });
+    } else {
+      res.status(500).send({
+        message: "Something went wrong",
+      });
+    }
   }
 };
 
@@ -31,19 +37,26 @@ const storage = multer.diskStorage({
     crypto.pseudoRandomBytes(16, function (err, raw) {
       cb(
         null,
-        raw.toString("hex") + "OptiAmazed" + "." + mime.extension(file.mimetype)
+        raw.toString("hex") +
+          "OptiAmazed" +
+          Date.now() +
+          "." +
+          mime.extension(file.mimetype)
       );
     });
   },
 });
 
-const upload = multer({ storage: storage, limits: { fileSize: MAX_SIZE } });
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: MAX_SIZE },
+});
 
 const cheetaho = new CheetahO({
   api_key: process.env.CHEETAHO_API_KEY,
 });
 
-const optSettings = {
+let optSettings = {
   file: "",
   compression: "lossy",
   keep_exif: 0,
@@ -61,39 +74,49 @@ app.use(express.static("public"));
 
 // routes
 app.get("/", (req, res) => {
-  res.render("index", { rendered: false, imageData: false, name: false });
+  res.render("index", { rendered: false, imageData: false, names: false });
 });
 
 app.post(
   "/",
-  upload.single("image"),
+  upload.array("image", 3),
   fileSizeLimitErrorHandler,
-  async (req, res) => {
-    const file = req.file;
-    optSettings.file = file.path;
-    let data;
-    const customPromise = new Promise((resolve, reject) => {
-      cheetaho.optimizeUpload(optSettings, (err, res) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res);
+  async (req, response) => {
+    let data = [];
+    let count = 0;
+    const fileNames = [];
+
+    const files = req.files;
+
+    for (let i = 0; i < files.length; i++) {
+      fileNames.push(files[i].originalname);
+      optSettings.file = files[i].path;
+      const promiseForUpload = new Promise((resolve, reject) => {
+        cheetaho.optimizeUpload(optSettings, (err, res) => {
+          if (err) {
+            reject(err);
+          } else {
+            fs.unlink(files[i].path, (err) => {
+              if (err) {
+                console.log(err);
+              }
+            });
+
+            resolve(res.data.item);
+          }
+        });
+      }).then((res) => {
+        data.push(res);
+        count++;
+        if (count === files.length) {
+          response.render("index", {
+            rendered: true,
+            imageData: data,
+            names: fileNames,
+          });
         }
       });
-    });
-
-    data = await customPromise;
-    await fs.unlink(file.path, (err) => {
-      if (err) {
-        console.log(err);
-      }
-    });
-
-    res.render("index", {
-      rendered: true,
-      imageData: data.data.item,
-      name: file.originalname,
-    });
+    }
   }
 );
 
